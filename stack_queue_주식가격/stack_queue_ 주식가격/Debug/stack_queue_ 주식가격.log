@@ -1,0 +1,3 @@
+﻿  소스.cpp
+C:\Users\user\Documents\GitHub\programmers\stack_queue_ 주식가격\stack_queue_ 주식가격\소스.cpp(37,23): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  stack_queue_ 주식가격.vcxproj -> C:\Users\user\Documents\GitHub\programmers\stack_queue_ 주식가격\Debug\stack_queue_ 주식가격.exe

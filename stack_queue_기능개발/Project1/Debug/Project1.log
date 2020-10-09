@@ -1,0 +1,3 @@
+﻿  소스.cpp
+C:\Users\user\Documents\GitHub\programmers\stack_queue_기능개발2\Project1\소스.cpp(47,23): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  Project1.vcxproj -> C:\Users\user\Documents\GitHub\programmers\stack_queue_기능개발2\Debug\Project1.exe

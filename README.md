@@ -11,8 +11,8 @@ https://www.notion.so/Algorithm-2861f06d4acd45b39e9283ebfdb4a19f
   - 평균: 25.5분
   - 8문제
 * level 3  
-  - 총시간: 138분
-  - 평균: 69분
-  - 2문제
+  - 총시간: 378분
+  - 평균: 126분
+  - 3문제
 * level 4
 * level 5

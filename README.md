@@ -18,3 +18,10 @@ https://www.notion.so/Algorithm-2861f06d4acd45b39e9283ebfdb4a19f
   - 3문제
 * level 4
 * level 5
+
+
+boj 
+* Bronze
+  - 총시간: 32분
+  - 평균: 32분
+  - 1문제

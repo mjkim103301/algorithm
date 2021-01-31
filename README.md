@@ -32,6 +32,6 @@ https://www.notion.so/Algorithm-2861f06d4acd45b39e9283ebfdb4a19f
   - 풀이 수: 1
   
 * Gold
-  - 총 시간: 100분
-  - 평   균: 100분
-  - 풀이 수: 1
+  - 총 시간: 220분
+  - 평   균: 110분
+  - 풀이 수: 2

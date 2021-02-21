@@ -22,9 +22,9 @@ https://www.notion.so/Algorithm-2861f06d4acd45b39e9283ebfdb4a19f
 
 #### Baekjoon 
 * Bronze
-  - 총 시간: 32분
-  - 평   균: 32분
-  - 풀이 수: 1
+  - 총 시간: 72분
+  - 평   균: 24분
+  - 풀이 수: 3
   
 * Silver
   - 총 시간: 36분

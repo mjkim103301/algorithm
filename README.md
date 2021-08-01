@@ -27,9 +27,9 @@ https://www.notion.so/Algorithm-2861f06d4acd45b39e9283ebfdb4a19f
   - 풀이 수: 3
   
 * Silver
-  - 총 시간: 36분
-  - 평   균: 36분
-  - 풀이 수: 1
+  - 총 시간: 80분
+  - 평   균: 26분
+  - 풀이 수: 3
   
 * Gold
   - 총 시간: 220분

@@ -35,3 +35,21 @@ https://www.notion.so/Algorithm-2861f06d4acd45b39e9283ebfdb4a19f
   - 총 시간: 220분
   - 평   균: 110분
   - 풀이 수: 2
+
+# com.ssafy.example.demo
+
+## api.controller.RoomController
+
+### 방을 관리하는 API
+
+#### POST
+
+![image-20210818110803008](C:\Users\multicampus\AppData\Roaming\Typora\typora-user-images\image-20210818110803008.png)
+
+#### GET
+
+#### PUT
+
+#### DELETE
+
+

@@ -4,63 +4,55 @@ import java.util.*;
 import java.io.*;
 
 public class BOJ10163_색종이 {
-    static class Node{
-        int x, y;
-        int width,height;
-        public Node(int x, int y, int width, int height){
-            this.x=x;
-            this.y=y;
-            this.width=width;
-            this.height=height;
-        }
-    }
-    static Node[] papers;
-    static int[][]map;
-    static int[]store;
     static int N;
+    static int x,y,width,height;
+    static int[][]map;
+    static int[]area;
     public static void main(String[] args)throws IOException {
         BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb=new StringBuilder();
         StringTokenizer st;
 
-        N=parse(br.readLine());
-        papers=new Node[N+1];
-        map=new int[101][101];
-        store=new int[N+1];
-
-        for(int i=1;i<=N;i++){
+        N=Integer.parseInt(br.readLine());
+        map=new int[1002][1002];
+        area=new int[N+1];
+        for(int i=0;i<N;i++){
             st=new StringTokenizer(br.readLine());
-            papers[i]=new Node(parse(st.nextToken()), parse(st.nextToken()), parse(st.nextToken()), parse(st.nextToken()));
+            x=Integer.parseInt(st.nextToken());
+            y=Integer.parseInt(st.nextToken());
+            width=Integer.parseInt(st.nextToken());
+            height=Integer.parseInt(st.nextToken());
+            solution(i+1);
         }
-        solution();
-        print();
-    }
-    static int parse(String s){
-        return Integer.parseInt(s);
-    }
-    static void print(){
-        StringBuilder sb=new StringBuilder();
-        for(int i=1;i<=N;i++){
-            sb.append(store[i]+"\n");
-        }
-        System.out.print(sb);
-    }
-    static void solution(){
-        for(int i=1;i<=N;i++){
-            getArea(i);
-        }
-    }
+        //print();
 
-    static void getArea(int paperNum){
-        Node paper=papers[paperNum];
-        for(int y=paper.y;y<paper.y+paper.height;y++){
-            for(int x=paper.x;x<paper.x+paper.width;x++){
-                int num=map[y][x];
-                if(num!=0){
-                    store[num]--;
+        for(int i=1;i<=N;i++){
+            sb.append(area[i]+"\n");
+        }
+        System.out.println(sb);
+
+    }
+    static void solution(int id) {
+        for (int yy = y; yy < y + height; yy++) {
+            for (int xx = x; xx < x + width; xx++) {
+                if (map[yy][xx] > 0) {
+                    area[map[yy][xx]]--;
                 }
-                store[paperNum]++;
-                map[y][x]=paperNum;
+                    map[yy][xx] = id;
+
+                area[id]++;
             }
         }
     }
+
+    static void print(){
+        for (int yy = 0; yy < 50; yy++) {
+            for (int xx = 0; xx <50; xx++) {
+               System.out.print(map[yy][xx]+" ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
 }

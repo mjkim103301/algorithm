@@ -1,145 +1,130 @@
-package baekjoon.level_gold;
-
-import java.io.*;
+package samsung_algo;
 import java.util.*;
-
+import java.io.*;
 public class BOJ17779_게리맨더링2 {
-    static int N;
-    static int[] sumPeople;
-    static int[][] people, area;
-    static int maxDLength;
-    static int minDiff = Integer.MAX_VALUE, min = Integer.MAX_VALUE, max = 0;
-    static ArrayList<int[]> five = new ArrayList<>();
-    static ArrayList<int[]> D = new ArrayList<>();
+	static int N;
+	static int[][]map, locate;
+	static int minDiff=Integer.MAX_VALUE;
+	public static void main(String[] args) throws IOException{
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		N=Integer.parseInt(br.readLine());
+		map=new int[N][N];
+		locate=new int[N][N];
+		
+		for(int y=0;y<N;y++) {
+			st=new StringTokenizer(br.readLine());
+			for(int x=0;x<N;x++) {
+				map[y][x]=Integer.parseInt(st.nextToken());
+			}
+		}
+		solution();
+		System.out.println(minDiff);
+	}
+	
+	static void solution() {
+		for(int x=0;x<N-2;x++) {
+			for(int y=1;y<N-1;y++) {
+				for(int d1=1;d1<N-1;d1++) {
+					for(int d2=1;d2<N-1;d2++) {
+						if(y-d1<0 || y+d2>=N || x+d1+d2>=N)continue;
+						setLocateFive(x, y, d1, d2);
+						setLocateAll(x, y, d1, d2);
+						int diff=getDiff();
+						if(minDiff>diff) {
+							minDiff=diff;
+						}
+						locate=new int[N][N];
+					}
+				}
+			}
+		}
+	}
+	
+	static void setLocateFive(int x, int y, int d1, int d2) {
+		for(int i=0;i<=d1;i++) {
+			locate[x+i][y-i]=5;
+			locate[x+d2+i][y+d2-i]=5;
+		}
+		for(int i=0;i<=d2;i++) {
+			locate[x+i][y+i]=5;
+			locate[x+d1+i][y-d1+i]=5;
+		}
+		
+		int level=d1+d2;
+		for(int r=0;r<N;r++) {
+			for(int c=0;c<N;c++) {
+				if(locate[r][c]==5) {
+					fillFive(r, c, level);
+					return;
+				}
+			}
+		}
+	}
+	
+	static void fillFive(int r, int c, int level) {
+		for(int y=r+1;y<r+level;y++) {
+			boolean start=false;
+			for(int x=0;x<N-1;x++) {
+				if(locate[y][x]==5 && !start) {
+					start=true;
+				}else if(locate[y][x]==5 && start) {
+					break;
+				}else if(start) {
+					locate[y][x]=5;
+				}
+			}
+		}
+	}
+	
+	static void setLocateAll(int x, int y, int d1, int d2) {
+		for(int r=0;r<x+d1;r++) {
+			for(int c=0;c<=y;c++) {
+				if(locate[r][c]>0)continue;
+				locate[r][c]=1;
+			}
+		
+		}
+		for(int r=0;r<=x+d2;r++) {
+			for(int c=y+1;c<=N-1;c++) {
+				if(locate[r][c]>0)continue;
+				locate[r][c]=2;
+			}
+		}
+		for(int r=x+d1;r<=N-1;r++) {
+			for(int c=0;c<y-d1+d2;c++) {
+				if(locate[r][c]>0)continue;
+				locate[r][c]=3;
+			}
+		}
+		for(int r=x+d2+1;r<=N-1;r++) {
+			for(int c=y-d1+d2;c<=N-1;c++) {
+				if(locate[r][c]>0)continue;
+				locate[r][c]=4;
+			}
+		}
+	}
+	
+	static int getDiff() {
+		int min=Integer.MAX_VALUE;
+		int max=0;
+		int[]sum=new int[6];
+		for(int y=0;y<N;y++) {
+			for(int x=0;x<N;x++) {
+				int loc=locate[y][x];
+				sum[loc]+=map[y][x];
+			}
+		}
+		
+		for(int i=1;i<=5;i++) {
+			if(sum[i]<min) {
+				min=sum[i];
+			}
+			if(sum[i]>max) {
+				max=sum[i];
+			}
+		}
+		return max-min;
+	}
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-        N = Integer.parseInt(br.readLine());
-        people = new int[N + 1][N + 1];
-        area = new int[N + 1][N + 1];
-        sumPeople=new int[6];
-        maxDLength = N - 2;
-        for (int y = 1; y <= N; y++) {
-            st = new StringTokenizer(br.readLine());
-            for (int x = 1; x <= N; x++) {
-                people[y][x] = Integer.parseInt(st.nextToken());
-            }
-        }
-        solution();
-        System.out.println(minDiff);
-    }
-
-    static void solution() {
-        for (int d1 = 1; d1 <=maxDLength; d1++) {
-            for (int d2 = 1; d2 <= maxDLength; d2++) {
-               //System.out.println(d1+ " "+d2);
-                D.add(new int[]{0, d1, d2});
-            }
-        }
-
-        for (int y = 1; y <= N; y++) {
-            for (int x = 1; x <= N; x++) {
-                divide(y, x);
-            }
-        }
-
-    }
-
-    static void divide(int y, int x) {
-        for (int[] d : D) {
-            if (y + d[1] + d[2]>N || x - d[1] <1 || x + d[2]> N) continue;
-            int r = y;
-            int c = x;
-            //구역 5 저장
-            for (int i = 0; i <= d[1]; i++) {
-                area[r][c] = 5;
-                r++;
-                c--;
-            }
-            r = y;
-            c = x;
-            for (int i = 0; i <= d[2]; i++) {
-                area[r][c] = 5;
-                r++;
-                c++;
-            }
-            r = y + d[1];
-            c = x - d[1];
-            for (int i = 0; i <= d[2]; i++) {
-                area[r][c] = 5;
-                r++;
-                c++;
-            }
-            r = y + d[2];
-            c = x + d[2];
-            for (int i = 0; i <= d[1]; i++) {
-                area[r][c] = 5;
-                r++;
-                c--;
-            }
-            //다른 구역 저장
-            fillOdd(1, y +d[1]-1, 1, x, 1);
-            fillOdd(y + d[1], N, 1, x-d[1]+d[2]-1, 3);
-            fillEven(1, y+d[2], x+1 , N, 2);
-            fillEven(y+d[2]+1, N, x-d[1]+d[2], N, 4);
-
-            getSumPeople();
-            for (int i = 1; i <= 5; i++) {
-                if (sumPeople[i] > max) {
-                    max = sumPeople[i];
-                }
-                if (sumPeople[i] < min) {
-                    min = sumPeople[i];
-                }
-            }
-            minDiff = Math.min(minDiff, max - min);
-            clear();
-
-        }
-    }
-    static void clear(){
-        Arrays.fill(sumPeople, 0);
-        for(int y=1;y<=N;y++){
-            Arrays.fill(area[y], 0);
-        }
-        max=0;
-        min=Integer.MAX_VALUE;
-    }
-    static void fillOdd(int y1, int y2, int x1, int x2, int num) {
-        for (int y = y1; y <= y2; y++) {
-            for (int x = x1; x <= x2; x++) {
-                if (area[y][x] == 0) {
-                    area[y][x] = num;
-                } else {
-                    break;
-                }
-            }
-        }
-    }
-
-    static void fillEven(int y1, int y2, int x1, int x2, int num) {
-        for (int y = y1; y <= y2; y++) {
-            for (int x = x2; x >= x1; x--) {
-                if (area[y][x] == 0) {
-                    area[y][x] = num;
-                } else {
-                    break;
-                }
-            }
-        }
-    }
-
-    static void getSumPeople() {
-        for (int y = 1; y <= N; y++) {
-            for (int x = 1; x <= N; x++) {
-                int num = area[y][x];
-                if (num == 0 || num == 5) {
-                    sumPeople[5] += people[y][x];
-                } else {
-                    sumPeople[num] += people[y][x];
-                }
-            }
-        }
-    }
 }

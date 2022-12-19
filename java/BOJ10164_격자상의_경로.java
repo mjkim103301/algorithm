@@ -3,7 +3,7 @@ package baekjoon.silver;
 import java.util.*;
 import java.io.*;
 
-public class BOJ10163_격자상의_경로 {
+public class BOJ10164_격자상의_경로 {
     static int N, M, K;
     static int map[][];
     static boolean[] visit;

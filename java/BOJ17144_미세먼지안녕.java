@@ -1,142 +1,131 @@
-package baekjoon.level_gold;
+package baekjoon.gold;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
+import java.io.*;
 
 public class BOJ17144_미세먼지안녕 {
-    static class Node{
+    static int R, C, T;
+    static int[][] map, spreadMap;
+    static int sum;
+
+    static class Node {
         int y, x;
-        int origin;
-        public Node(int y, int x, int origin){
-            this.y=y;
-            this.x=x;
-            this.origin=origin;
+
+        public Node(int y, int x) {
+            this.y = y;
+            this.x = x;
         }
     }
-    static int R, C, T;
-    static int[][] map;
 
-    static Queue<Node> dust = new ArrayDeque<>();
-    static ArrayList<int[]> airCleaner = new ArrayList<>();
-    static int answer;
-    static int dydx[][] = {
-            {-1, 0},//상
-            {0, 1},//우
-            {1, 0},//하
-            {0, -1}//좌
-
+    static List<Node> robot = new ArrayList<>();
+    static int[][] dydx = {
+            {0, 1},
+            {0, -1},
+            {1, 0},
+            {-1, 0}
     };
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st= new StringTokenizer(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
         R = Integer.parseInt(st.nextToken());
         C = Integer.parseInt(st.nextToken());
         T = Integer.parseInt(st.nextToken());
 
         map = new int[R][C];
+        spreadMap = new int[R][C];
+
         for (int y = 0; y < R; y++) {
             st = new StringTokenizer(br.readLine());
             for (int x = 0; x < C; x++) {
-                int temp = Integer.parseInt(st.nextToken());
-                map[y][x] = temp;
-                if (temp == -1) {
-                    airCleaner.add(new int[]{y, x});
+                map[y][x] = Integer.parseInt(st.nextToken());
+                if (map[y][x] == -1) {
+                    robot.add(new Node(y, x));
                 }
             }
         }
-
         solution();
-        System.out.print(answer);
-
+        System.out.println(sum);
     }
 
     static void solution() {
-        for (int i = 0; i < T; i++) {
-            findDust();
+        for (int time = 1; time <= T; time++) {
             spread();
             clean();
+            copy();
         }
         for (int y = 0; y < R; y++) {
             for (int x = 0; x < C; x++) {
-                if (map[y][x] >= 0) {
-                    answer+=map[y][x];
-                }
-            }
-        }
-
-    }
-
-    static void findDust() {
-        for (int y = 0; y < R; y++) {
-            for (int x = 0; x < C; x++) {
-                if (map[y][x] <= 0) continue;
-                dust.offer(new Node(y, x, map[y][x]));
+                if (map[y][x] == -1) continue;
+                sum += map[y][x];
             }
         }
     }
 
     static void spread() {
-        while (!dust.isEmpty()) {
-
-            Node d = dust.poll();
-            int spreadAmount = d.origin / 5;
-            int cnt = 0;
-
-            for (int i = 0; i < 4; i++) {
-                int y = d.y + dydx[i][0];
-                int x = d.x + dydx[i][1];
-                if (y < 0 || x < 0 || y >= R || x >= C) {
+        for (int y = 0; y < R; y++) {
+            for (int x = 0; x < C; x++) {
+                if (map[y][x] < 5) {
+                    spreadMap[y][x] += map[y][x];
                     continue;
                 }
-                if(map[y][x]==-1)continue;
-                map[y][x] += spreadAmount;
-                cnt++;
-            }
-            map[d.y][d.x] -= spreadAmount * cnt;
-            if (map[d.y][d.x] <= 0) {
-                map[d.y][d.x] = 0;
+                int dust = map[y][x] / 5;
+                int cnt = 0;
+                for (int i = 0; i < 4; i++) {
+                    int ny = y + dydx[i][0];
+                    int nx = x + dydx[i][1];
+
+                    if (ny < 0 || nx < 0 || ny >= R || nx >= C || map[ny][nx] == -1) continue;
+                    cnt++;
+                    spreadMap[ny][nx] += dust;
+                }
+                spreadMap[y][x] += map[y][x] - (dust * cnt);
             }
         }
     }
 
+    static void clean() {
+        Node robot1 = robot.get(0);
 
-    static void clean(){
-        int counterC=airCleaner.get(0)[0];
-        int clockwise=airCleaner.get(1)[0];
-
-       for(int y=counterC-2;y>=0;y--){
-           map[y+1][0]=map[y][0];
-       }
-       for(int x=1;x<C;x++){
-           map[0][x-1]=map[0][x];
-       }
-       for(int y=1;y<=counterC;y++){
-           map[y-1][C-1]=map[y][C-1];
-       }
-       for(int x=C-2;x>0;x--){
-           map[counterC][x+1]=map[counterC][x];
-       }
-       map[counterC][1]=0;
-
-
-        for(int y=clockwise+2;y<R;y++){
-            map[y-1][0]=map[y][0];
+        for (int y = robot1.y - 1; y > 0; y--) {
+            spreadMap[y][0] = spreadMap[y - 1][0];
         }
-        for(int x=1;x<C;x++){
-            map[R-1][x-1]=map[R-1][x];
+        for (int x = 0; x < C - 1; x++) {
+            spreadMap[0][x] = spreadMap[0][x + 1];
         }
-        for(int y=R-2;y>=clockwise;y--){
-            map[y+1][C-1]=map[y][C-1];
+        for (int y = 0; y < robot1.y; y++) {
+            spreadMap[y][C - 1] = spreadMap[y + 1][C - 1];
         }
-        for(int x=C-2;x>0;x--){
-            map[clockwise][x+1]=map[clockwise][x];
+        for (int x = C - 1; x > 1; x--) {
+            spreadMap[robot1.y][x] = spreadMap[robot1.y][x - 1];
         }
-        map[clockwise][1]=0;
+        spreadMap[robot1.y][robot1.x + 1] = 0;
 
+        Node robot2 = robot.get(1);
+        for (int y = robot2.y + 1; y < R - 1; y++) {
+            spreadMap[y][0] = spreadMap[y + 1][0];
+        }
+        for (int x = 0; x < C - 1; x++) {
+            spreadMap[R - 1][x] = spreadMap[R - 1][x + 1];
+        }
+        for (int y = R - 1; y > robot2.y; y--) {
+            spreadMap[y][C - 1] = spreadMap[y - 1][C - 1];
+        }
+        for (int x = C - 1; x > 1; x--) {
+            spreadMap[robot2.y][x] = spreadMap[robot2.y][x - 1];
+        }
+        spreadMap[robot2.y][robot2.x + 1] = 0;
+    }
 
+    static void copy() {
+        for (int y = 0; y < R; y++) {
+            map[y] = Arrays.copyOf(spreadMap[y], C);
+            Arrays.fill(spreadMap[y], 0);
+        }
     }
 }
+
+
+
 

@@ -1,4 +1,4 @@
-package baekjoon.level_silver;
+package baekjoon.silver;
 
 import java.util.*;
 import java.io.*;
@@ -6,6 +6,7 @@ import java.io.*;
 public class BOJ11403_경로찾기 {
     static int N;
     static int[][] map;
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,34 +16,33 @@ public class BOJ11403_경로찾기 {
         map = new int[N][N];
 
         for (int y = 0; y < N; y++) {
-            st = new StringTokenizer(br.readLine(), " ");
-            Arrays.fill(map[y], N + 1);
+            st = new StringTokenizer(br.readLine());
             for (int x = 0; x < N; x++) {
-                if(Integer.parseInt(st.nextToken())==1){
-                    map[y][x] = 1;
-                }
+                map[y][x] = Integer.parseInt(st.nextToken());
+            }
+        }
 
-            }
-        }
         solution();
-        for (int y = 0; y < N; y++) {
-            for (int x = 0; x < N; x++) {
-                if (map[y][x] <= N) {
-                    System.out.print("1 ");
-                }else{
-                    System.out.print("0 ");
-                }
-            }
-            System.out.println();
-        }
+        System.out.print(sb);
     }
 
     static void solution() {
-        for(int k=0;k<N;k++){
-            for(int y=0;y<N;y++){
-                for(int x=0;x<N;x++){
-                    if(map[y][x]>map[y][k]+map[k][x]){
-                        map[y][x]=map[y][k]+map[k][x];
+        floyd();
+        for (int y = 0; y < N; y++) {
+            for (int x = 0; x < N; x++) {
+                sb.append(map[y][x]).append(" ");
+            }
+            sb.append("\n");
+        }
+    }
+
+    static void floyd() {
+        for (int k = 0; k < N; k++) {
+            for (int from = 0; from < N; from++) {
+                for (int to = 0; to < N; to++) {
+                    if (k == from || k == to || map[from][to] == 1) continue;
+                    if (map[from][k] == 1 && map[k][to] == 1) {
+                        map[from][to] = 1;
                     }
                 }
             }
